@@ -5,7 +5,6 @@ class Service {
     this.model = model
   }
 
-  // Arrow fx for binding
   readAll = async query => {
     let { skip, limit } = query
 
@@ -23,105 +22,25 @@ class Service {
       }
     }
 
-    try {
-      const items = await this.model
-        .find(query)
-        .skip(skip)
-        .limit(limit)
-      const total = await this.model.countDocuments()
+    const data = await this.model
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+    const total = await this.model.countDocuments()
 
-      return {
-        error: false,
-        statusCode: 200,
-        data: items,
-        total
-      }
-    } catch (errors) {
-      return {
-        error: true,
-        statusCode: 500,
-        errors
-      }
-    }
+    return { data, total }
   }
 
-  read = async id => {
-    try {
-      const item = await this.model.findById(id)
-      return {
-        error: false,
-        statusCode: 200,
-        item
-      }
-    } catch (errors) {
-      return {
-        error: true,
-        statusCode: 500,
-        errors
-      }
-    }
-  }
+  read = id => this.model.findById(id)
 
-  create = async data => {
-    try {
-      const item = await this.model.create(data)
-      if (item) {
-        return {
-          error: false,
-          item
-        }
-      }
-    } catch (error) {
-      console.log('error', error)
-      return {
-        error: true,
-        statusCode: 500,
-        message: error.errmsg || 'Not able to create item',
-        errors: error.errors
-      }
-    }
-  }
+  create = data => this.model.create(data)
 
-  update = async (id, data) => {
-    try {
-      const item = await this.model.findByIdAndUpdate(id, data, { new: true })
-      return {
-        error: false,
-        statusCode: 202,
-        item
-      }
-    } catch (errors) {
-      return {
-        error: true,
-        statusCode: 500,
-        errors
-      }
-    }
-  }
+  update = (id, data) => this.model.findByIdAndUpdate(id, data, { new: true })
 
   delete = async id => {
-    try {
-      const item = await this.model.findByIdAndDelete(id)
-      if (!item) {
-        return {
-          error: true,
-          statusCode: 404,
-          message: 'item not found'
-        }
-      }
-      return {
-        error: false,
-        deleted: true,
-        statusCode: 202,
-        item
-      }
-    } catch (errors) {
-      return {
-        error: true,
-        statusCode: 500,
-        errors
-      }
-    }
+    const data = await this.model.findByIdAndDelete(id)
+    if (!data) return { data, message: 'not found' }
+    return { data }
   }
 }
 

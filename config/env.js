@@ -5,5 +5,6 @@ dotenv.config()
 export default {
   mongoDB_URI:
     process.env.MONGODB_URI || 'mongodb://localhost:27017/node-starter',
-  port: process.env.PORT || 5000
+  port: process.env.PORT || 3000,
+  secret: process.env.SECRET
 }

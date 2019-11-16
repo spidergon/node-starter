@@ -3,37 +3,39 @@ class Controller {
     this.service = service
   }
 
-  // Arrow fx for binding
   readAll = async (req, res) => {
-    return res.status(200).send(await this.service.readAll(req.query))
+    const { data, total } = await this.service.readAll(req.query)
+    return res.send(this.getResponse({ data, total }))
   }
 
   read = async (req, res) => {
-    const { id } = req.params
-    return res.status(200).send(await this.service.read(id))
+    const data = await this.service.read(req.params.id)
+    return res.send(this.getResponse({ data }))
   }
 
   create = async (req, res) => {
-    const response = await this.service.create(req.body)
-    if (response.error) return res.status(response.statusCode).send(response)
-    return res.status(201).send(response)
+    const data = await this.service.create(req.body)
+    return res.status(201).send(this.getResponse({ data, status: 201 }))
   }
 
   update = async (req, res) => {
-    const { id } = req.params
-
-    const response = await this.service.update(id, req.body)
-
-    return res.status(response.statusCode).send(response)
+    const data = await this.service.update(req.params.id, req.body)
+    return res.status(202).send(this.getResponse({ data, status: 202 }))
   }
 
   delete = async (req, res) => {
-    const { id } = req.params
-
-    const response = await this.service.delete(id)
-
-    return res.status(response.statusCode).send(response)
+    const { data, message } = await this.service.delete(req.params.id)
+    const status = !data ? 404 : 202
+    return res.status(status).send(this.getResponse({ data, status, message }))
   }
+
+  getResponse = ({ data, message, total, status = 200 }) => ({
+    error: false,
+    status,
+    message,
+    total,
+    data
+  })
 }
 
 export default Controller
