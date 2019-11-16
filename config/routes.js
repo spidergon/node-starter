@@ -1,4 +1,4 @@
-import PostController from './../src/controllers/PostController'
+import PostController from '../src/controllers/PostController'
 
 export default server => {
   // POST ROUTES
