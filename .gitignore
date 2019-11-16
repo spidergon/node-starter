@@ -99,3 +99,6 @@ public/
 
 # Visual Studio Code
 .vscode
+
+# Eslint
+eslint_result.html

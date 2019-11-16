@@ -1,9 +1,9 @@
-import mongoose, { Schema } from "mongoose";
-import uniqueValidator from "mongoose-unique-validator";
-import slugify from "slugify";
+import mongoose, { Schema } from 'mongoose'
+import uniqueValidator from 'mongoose-unique-validator'
+import slugify from 'slugify'
 
 class Post {
-  initSchema() {
+  initSchema () {
     const schema = new Schema(
       {
         title: {
@@ -25,33 +25,33 @@ class Post {
         }
       },
       { timestamps: true }
-    );
+    )
 
     schema.pre(
-      "save",
-      function(next) {
-        let post = this;
-        if (!post.isModified("title")) {
-          return next();
+      'save',
+      next => {
+        const post = this
+        if (!post.isModified('title')) {
+          return next()
         }
-        post.slug = slugify(post.title, "_");
-        console.log("set slug", post.slug);
-        return next();
+        post.slug = slugify(post.title, '_')
+        console.log('set slug', post.slug)
+        return next()
       },
-      function(err) {
-        next(err);
+      (err, next) => {
+        next(err)
       }
-    );
+    )
 
-    schema.plugin(uniqueValidator);
+    schema.plugin(uniqueValidator)
 
-    mongoose.model("posts", schema);
+    mongoose.model('posts', schema)
   }
 
-  getInstance() {
-    this.initSchema();
-    return mongoose.model("posts");
+  getInstance () {
+    this.initSchema()
+    return mongoose.model('posts')
   }
 }
 
-export default Post;
+export default Post

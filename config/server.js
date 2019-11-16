@@ -1,11 +1,11 @@
-import express from "express";
-import bodyParser from "body-parser";
-import setRoutes from "./routes";
+import express from 'express'
+import bodyParser from 'body-parser'
+import setRoutes from './routes'
 
-const server = express();
+const server = express()
 
-server.use(bodyParser.json());
+server.use(bodyParser.json())
 
-setRoutes(server);
+setRoutes(server)
 
-export default server;
+export default server

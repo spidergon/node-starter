@@ -6,9 +6,10 @@
   "scripts": {
     "start": "babel-node index.js",
     "dev:start": "clear; nodemon --exec babel-node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watch",
+    "test:cov": "jest --watchAll --coverage",
+    "lint": "eslint --ignore-pattern '/node_modules/*' -o ./eslint_result.html -f html ."
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -24,7 +25,30 @@
     "@babel/node": "^7.7.0",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
     "@babel/preset-env": "^7.7.1",
+    "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
+    "eslint": "^6.6.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^1.19.4"
+  },
+  "prettier": {
+    "endOfLine": "lf",
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "none"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spidergon/node-starter"
+  },
+  "bugs": {
+    "url": "https://github.com/spidergon/node-starter/issues"
   }
 }

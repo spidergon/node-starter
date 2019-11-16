@@ -1,12 +1,13 @@
-import Controller from "./Controller";
-import PostService from "./../services/PostService";
-import Post from "./../models/Post";
-const postService = new PostService(new Post().getInstance());
+import Controller from './Controller'
+import PostService from './../services/PostService'
+import Post from './../models/Post'
+const postService = new PostService(new Post().getInstance())
 
 class PostController extends Controller {
-  constructor(service) {
-    super(service);
+  constructor (service) {
+    super(service)
+    this.service = service
   }
 }
 
-export default new PostController(postService);
+export default new PostController(postService)

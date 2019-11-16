@@ -1,9 +1,10 @@
-import Service from "./Service";
+import Service from './Service'
 
 class PostService extends Service {
-  constructor(model) {
-    super(model);
+  constructor (model) {
+    super(model)
+    this.model = model
   }
 }
 
-export default PostService;
+export default PostService
