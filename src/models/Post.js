@@ -29,18 +29,20 @@ class Post {
 
     schema.pre(
       'save',
-      next => {
-        const post = this
-        if (!post.isModified('title')) {
+      async function (next) {
+        const self = this // eslint-disable-line babel/no-invalid-this
+        if (!self.isModified('title')) {
           return next()
         }
-        post.slug = slugify(post.title, '_')
-        console.log('set slug', post.slug)
-        return next()
+        self.slug = slugify(self.title)
+        const slugRegEx = new RegExp(`^(${self.slug})((-[0-9]*$)?)$`, 'i')
+        const eventsWithSlug = await self.constructor.find({ slug: slugRegEx })
+        if (eventsWithSlug.length) {
+          self.slug = `${self.slug}-${eventsWithSlug.length + 1}`
+        }
+        next()
       },
-      (err, next) => {
-        next(err)
-      }
+      err => console.log(err)
     )
 
     schema.plugin(uniqueValidator)
