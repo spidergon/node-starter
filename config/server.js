@@ -5,14 +5,13 @@ import session from 'express-session'
 import connectMongo from 'connect-mongo'
 import mongoose from 'mongoose'
 import morgan from 'morgan'
-import env from './env'
+import env, { isDev, isProd } from './env'
 import setRoutes from './routes'
 import { notFound, devErrors, prodErrors } from '../src/helpers/errorHandlers'
 
 const server = express()
 
-const isProd = server.get('env') === 'production'
-const isDev = server.get('env') === 'development'
+console.log(`Environment: ${server.get('env')}`)
 
 server.use(helmet()) // cleaning http headers
 server.use(compression()) // gzip compression of the response body
@@ -49,3 +48,5 @@ if (isDev) {
 server.use(prodErrors) // manage production errors
 
 export default server
+
+export const port = env.port

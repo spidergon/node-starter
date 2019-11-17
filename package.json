@@ -6,8 +6,8 @@
   "scripts": {
     "start": "babel-node index.js",
     "dev:start": "clear; nodemon --exec babel-node index.js",
-    "test": "jest --watch",
-    "test:cov": "jest --watchAll --coverage",
+    "test": "NODE_ENV=test jest --watch --testTimeout=10000",
+    "test:cov": "NODE_ENV=test jest --watchAll --coverage",
     "lint": "eslint --ignore-pattern '/node_modules/*' -o ./eslint_result.html -f html ."
   },
   "author": "",
@@ -28,8 +28,11 @@
     "@babel/core": "^7.7.2",
     "@babel/node": "^7.7.0",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.7.1",
+    "@babel/runtime": "^7.7.2",
     "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "eslint": "^6.6.0",
     "eslint-config-standard": "^14.1.0",
@@ -38,7 +41,9 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "nodemon": "^1.19.4"
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.4",
+    "supertest": "^4.0.2"
   },
   "prettier": {
     "endOfLine": "lf",
