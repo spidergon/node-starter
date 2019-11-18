@@ -3,33 +3,54 @@ class Controller {
     this.service = service
   }
 
-  readAll = async (req, res) => {
-    const { data, total } = await this.service.readAll(req.query)
-    return res.send(this.getResponse({ data, total }))
+  readAll = async (req, res, next) => {
+    this.service.readAll(
+      req.query,
+      data => res.json(this.format({ data, total: data.length })),
+      err => next({ ...err, status: 400 })
+    )
   }
 
-  read = async (req, res) => {
-    const data = await this.service.read(req.params.id)
-    return res.send(this.getResponse({ data }))
+  read = async (req, res, next) => {
+    this.service.read(
+      req.params.id,
+      data => res.json(this.format({ data })),
+      err => next({ ...err, status: 400 })
+    )
   }
 
-  create = async (req, res) => {
-    const data = await this.service.create(req.body)
-    return res.status(201).send(this.getResponse({ data, status: 201 }))
+  create = async (req, res, next) => {
+    this.service.create(
+      req.body,
+      data => res.status(201).send(this.format({ data, status: 201 })),
+      err => next({ ...err, status: 400 })
+    )
   }
 
-  update = async (req, res) => {
-    const data = await this.service.update(req.params.id, req.body)
-    return res.status(202).send(this.getResponse({ data, status: 202 }))
+  update = async (req, res, next) => {
+    this.service.update(
+      req.params.id,
+      req.body,
+      (data, errorCode, message) => {
+        const status = errorCode || 200
+        res.status(status).send(this.format({ data, status, message }))
+      },
+      err => next({ ...err, status: 400 })
+    )
   }
 
-  delete = async (req, res) => {
-    const { data, message } = await this.service.delete(req.params.id)
-    const status = !data ? 404 : 202
-    return res.status(status).send(this.getResponse({ data, status, message }))
+  delete = async (req, res, next) => {
+    this.service.delete(
+      req.params.id,
+      (data, errorCode, message) => {
+        const status = errorCode || 200
+        res.status(status).send(this.format({ data, status, message }))
+      },
+      err => next({ ...err, status: 400 })
+    )
   }
 
-  getResponse = ({ data, message, total, status = 200 }) => ({
+  format = ({ data, message, total, status = 200 }) => ({
     error: false,
     status,
     message,

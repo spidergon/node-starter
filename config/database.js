@@ -1,19 +1,19 @@
 import mongoose from 'mongoose'
-import env, { isDev } from './env'
+import env from './env'
 
 class Connection {
   constructor () {
-    if (isDev) console.log('Establish new connection with url', env.mongoDB_URI)
-    mongoose.Promise = global.Promise
-    mongoose.connection.on('error', err => {
-      console.error(`Mongoose connection error → ${err.message}`)
-    })
-    mongoose.connect(env.mongoDB_URI, {
-      useNewUrlParser: true,
-      // useFindAndModify: false,
-      // useCreateIndex: true,
-      useUnifiedTopology: true
-    })
+    mongoose
+      .connect(env.mongoDB_URI, {
+        // useCreateIndex: true,
+        // useFindAndModify: false,
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      })
+      .catch(error => {
+        console.log('Unable to connect to database!')
+        console.error(error)
+      })
   }
 }
 

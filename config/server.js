@@ -10,7 +10,7 @@ import { notFound, devErrors, prodErrors } from './middlewares/errorHandlers'
 
 const server = express()
 
-console.log(`Environment: ${server.get('env')}`)
+if (!isProd) console.log(`Environment: ${server.get('env')}`)
 
 server.use(helmet()) // cleaning http headers
 server.use(cors) // prevent cors errors

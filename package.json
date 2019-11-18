@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "babel-node index.js",
-    "dev": "clear; npm run lint && nodemon --exec babel-node index.js",
+    "dev": "clear; nodemon --exec babel-node index.js",
     "test": "NODE_ENV=test jest --watch --testTimeout=10000",
     "test:cov": "NODE_ENV=test jest --watchAll --coverage",
     "lint": "eslint --ignore-pattern '/node_modules/*' -o ./eslint_result.html -f html ."

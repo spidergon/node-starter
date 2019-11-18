@@ -5,7 +5,7 @@ class Service {
     this.model = model
   }
 
-  readAll = async query => {
+  readAll = (query, next, fallback) => {
     let { skip, limit } = query
 
     skip = skip ? Number(skip) : 0
@@ -17,30 +17,51 @@ class Service {
     if (query._id) {
       try {
         query._id = new mongoose.mongo.ObjectId(query._id)
-      } catch (error) {
-        console.log('not able to generate mongoose id with content', query._id)
+      } catch (err) {
+        return fallback(err)
       }
     }
 
-    const data = await this.model
+    this.model
       .find(query)
       .skip(skip)
       .limit(limit)
-    const total = await this.model.countDocuments()
-
-    return { data, total }
+      .then(next)
+      .catch(fallback)
   }
 
-  read = id => this.model.findById(id)
+  read = (id, next, fallback) => {
+    this.model
+      .findById(id)
+      .then(next)
+      .catch(fallback)
+  }
 
-  create = data => this.model.create(data)
+  create = (data, next, fallback) => {
+    this.model
+      .create(data)
+      .then(next)
+      .catch(fallback)
+  }
 
-  update = (id, data) => this.model.findByIdAndUpdate(id, data, { new: true })
+  update = (id, body, next, fallback) => {
+    this.model
+      .findByIdAndUpdate(id, body, { new: true })
+      .then(data => {
+        if (!data) return next(data, 404, 'not found')
+        next(data)
+      })
+      .catch(fallback)
+  }
 
-  delete = async id => {
-    const data = await this.model.findByIdAndDelete(id)
-    if (!data) return { data, message: 'not found' }
-    return { data }
+  delete = (id, next, fallback) => {
+    this.model
+      .findByIdAndDelete(id)
+      .then(data => {
+        if (!data) return next(data, 404, 'not found')
+        next(data)
+      })
+      .catch(fallback)
   }
 }
 
