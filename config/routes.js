@@ -1,5 +1,5 @@
 import PostController from '../src/controllers/PostController'
-import { catchErrors } from '../src/helpers/errorHandlers'
+import { catchErrors } from './middlewares/errorHandlers'
 
 export default server => {
   // POST ROUTES
