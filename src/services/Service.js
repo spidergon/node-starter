@@ -6,13 +6,15 @@ class Service {
   }
 
   readAll = (query, next, fallback) => {
-    let { skip, limit } = query
+    let { skip, limit, sort } = query
 
     skip = skip ? Number(skip) : 0
     limit = limit ? Number(limit) : 10
+    sort = sort || '-createdAt'
 
     delete query.skip
     delete query.limit
+    delete query.sort
 
     if (query._id) {
       try {
@@ -26,6 +28,7 @@ class Service {
       .find(query)
       .skip(skip)
       .limit(limit)
+      .sort(sort)
       .then(next)
       .catch(fallback)
   }
@@ -37,9 +40,9 @@ class Service {
       .catch(fallback)
   }
 
-  create = (data, next, fallback) => {
+  create = (body, next, fallback) => {
     this.model
-      .create(data)
+      .create(body)
       .then(next)
       .catch(fallback)
   }
@@ -48,7 +51,7 @@ class Service {
     this.model
       .findByIdAndUpdate(id, body, { new: true })
       .then(data => {
-        if (!data) return next(data, 404, 'not found')
+        if (!data) return fallback({ message: 'not found', status: 404 })
         next(data)
       })
       .catch(fallback)
@@ -58,7 +61,7 @@ class Service {
     this.model
       .findByIdAndDelete(id)
       .then(data => {
-        if (!data) return next(data, 404, 'not found')
+        if (!data) return fallback({ message: 'not found', status: 404 })
         next(data)
       })
       .catch(fallback)

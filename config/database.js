@@ -5,7 +5,7 @@ class Connection {
   constructor () {
     mongoose
       .connect(env.mongoDB_URI, {
-        // useCreateIndex: true,
+        useCreateIndex: true,
         // useFindAndModify: false,
         useNewUrlParser: true,
         useUnifiedTopology: true

@@ -22,7 +22,7 @@ class Controller {
   create = async (req, res, next) => {
     this.service.create(
       req.body,
-      data => res.status(201).send(this.format({ data, status: 201 })),
+      data => res.status(201).json(this.format({ data, status: 201 })),
       err => next({ ...err, status: 400 })
     )
   }
@@ -31,31 +31,26 @@ class Controller {
     this.service.update(
       req.params.id,
       req.body,
-      (data, errorCode, message) => {
-        const status = errorCode || 200
-        res.status(status).send(this.format({ data, status, message }))
-      },
-      err => next({ ...err, status: 400 })
+      data => res.status(200).json(this.format({ data })),
+      err => next({ ...err, status: err.status || 400 })
     )
   }
 
   delete = async (req, res, next) => {
     this.service.delete(
       req.params.id,
-      (data, errorCode, message) => {
-        const status = errorCode || 200
-        res.status(status).send(this.format({ data, status, message }))
-      },
-      err => next({ ...err, status: 400 })
+      data => res.status(200).json(this.format({ data })),
+      err => next({ ...err, status: err.status || 400 })
     )
   }
 
-  format = ({ data, message, total, status = 200 }) => ({
-    error: false,
+  format = ({ status = 200, error, message, total, data, custom }) => ({
     status,
+    error,
     message,
     total,
-    data
+    data,
+    ...custom
   })
 }
 

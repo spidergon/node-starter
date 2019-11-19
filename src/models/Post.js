@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose'
-import uniqueValidator from 'mongoose-unique-validator'
 import slugify from 'slugify'
 
 class Post {
@@ -32,8 +31,6 @@ class Post {
       },
       err => console.log(err)
     )
-
-    schema.plugin(uniqueValidator)
 
     mongoose.model('Post', schema)
   }

@@ -28,11 +28,9 @@ export const notFound = (req, res, next) => {
 export const devErrors = (err, req, res, next) => {
   if (!err) return next(err)
   const status = err.status || 500
-  res.status(status)
-  res.json({
-    error: true,
+  res.status(status).json({
     status,
-    message: err.message,
+    error: err.message,
     stack: (err.stack || '').replace(
       /[a-z_-\d]+.js:\d+:\d+/gi,
       '<mark>$&</mark>'
@@ -48,10 +46,8 @@ export const devErrors = (err, req, res, next) => {
 export const prodErrors = (err, req, res, next) => {
   if (!err) return next(err)
   const status = err.status || 500
-  res.status(status)
-  res.json({
-    error: true,
+  res.status(status).json({
     status,
-    message: err.message
+    error: err.message
   })
 }
