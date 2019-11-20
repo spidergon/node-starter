@@ -15,6 +15,6 @@ export default server => {
   server.get('/api/posts/', catchErrors(postController.readAll))
   server.get('/api/posts/:id', catchErrors(postController.read))
   server.post('/api/posts/', auth, multer, catchErrors(postController.create))
-  server.put('/api/posts/:id', auth, catchErrors(postController.update))
+  server.put('/api/posts/:id', auth, multer, catchErrors(postController.update))
   server.delete('/api/posts/:id', auth, catchErrors(postController.delete))
 }

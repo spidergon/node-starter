@@ -1,5 +1,5 @@
 class Controller {
-  constructor(service) {
+  constructor (service) {
     this.service = service
   }
 
@@ -52,6 +52,11 @@ class Controller {
     data,
     ...custom
   })
+
+  getImgUrl (req) {
+    if (!req.file) return ''
+    return `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+  }
 }
 
 export default Controller

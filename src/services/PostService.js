@@ -1,3 +1,4 @@
+import fs from 'fs'
 import Service from './Service'
 
 class PostService extends Service {
@@ -6,23 +7,22 @@ class PostService extends Service {
     this.model = model
   }
 
-  create = (req, next, fallback) => {
-    this.model
-      .create({
-        title: req.body.title,
-        description: req.body.description,
-        content: req.body.content,
-        imageUrl: this.getImgUrl(req)
+  delete = async (id, next, fallback) => {
+    const post = await this.model.findById(id)
+    if (post) {
+      const filename = post.imageUrl.split('/uploads/')[1]
+      fs.unlink('uploads/' + filename, () => {
+        this.model
+          .findByIdAndDelete(id)
+          .then(data => {
+            if (!data) return fallback({ message: 'not found', status: 404 })
+            next(data)
+          })
+          .catch(fallback)
       })
-      .then(next)
-      .catch(fallback)
-  }
-
-  getImgUrl (req) {
-    if (!req.file) return ''
-    return (
-      req.protocol + '://' + req.get('host') + '/uploads/' + req.file.filename
-    )
+    } else {
+      fallback({ message: 'not found', status: 404 })
+    }
   }
 }
 
