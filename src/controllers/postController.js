@@ -7,6 +7,14 @@ class PostController extends Controller {
     super(service)
     this.service = service
   }
+
+  create = async (req, res, next) => {
+    this.service.create(
+      req,
+      data => res.status(201).json(this.format({ data, status: 201 })),
+      err => next({ ...err, status: 400 })
+    )
+  }
 }
 
 const postService = new PostService(new Post().getInstance())

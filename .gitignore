@@ -102,3 +102,7 @@ public/
 
 # Eslint
 eslint_result.html
+
+# Uploads folder content is ignored
+uploads/*
+!uploads/.gitkeep

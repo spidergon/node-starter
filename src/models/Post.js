@@ -6,9 +6,9 @@ class Post {
     const schema = new Schema(
       {
         title: { type: String, required: true },
-        subtitle: { type: String, required: false },
         description: { type: String, required: false },
         content: { type: String, required: true },
+        imageUrl: { type: String, required: false },
         slug: String
       },
       { timestamps: true }
