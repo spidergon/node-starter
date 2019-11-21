@@ -3,6 +3,7 @@ import { mongoose } from '../config/database'
 import server from '../config/server'
 
 const request = supertest(server)
+const email = 'tmp@mail.com'
 
 afterAll(done => mongoose.disconnect(done))
 
@@ -10,7 +11,8 @@ describe('POST /api/auth/signup', () => {
   it('should NOT signup without required `name` field', () => {
     return request
       .post('/api/auth/signup')
-      .send({ email: 'test@mail.com', password: 'azer1234' })
+      .send({ email, password: 'azer1234' })
+      .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
         error: 'User validation failed: name: Path `name` is required.'
@@ -21,6 +23,7 @@ describe('POST /api/auth/signup', () => {
     return request
       .post('/api/auth/signup')
       .send({ name: 'Chris', password: 'azer1234' })
+      .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
         error: 'User validation failed: email: Path `email` is required.'
@@ -30,7 +33,8 @@ describe('POST /api/auth/signup', () => {
   it('should NOT signup without required `password` field', () => {
     return request
       .post('/api/auth/signup')
-      .send({ name: 'Chris', email: 'test@mail.com' })
+      .send({ name: 'Chris', email })
+      .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
         error: 'User validation failed: password: Path `password` is required.'
@@ -40,7 +44,8 @@ describe('POST /api/auth/signup', () => {
   it('should NOT signup with incorrect `email` field', () => {
     return request
       .post('/api/auth/signup')
-      .send({ name: 'Chris', email: 'testmail.com', password: 'azer1234' })
+      .send({ name: 'Chris', email: 'tmpmail.com', password: 'azer1234' })
+      .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
         error: 'User validation failed: email: Email invalide'
@@ -50,7 +55,7 @@ describe('POST /api/auth/signup', () => {
   it('should signup correctly', () => {
     return request
       .post('/api/auth/signup')
-      .send({ name: 'Chris', email: 'test@mail.com', password: 'azer1234' })
+      .send({ name: 'Chris', email, password: 'azer1234' })
       .expect('Content-Type', /json/)
       .expect(201)
   })
@@ -58,18 +63,24 @@ describe('POST /api/auth/signup', () => {
   it('should NOT signup with identical email', () => {
     return request
       .post('/api/auth/signup')
-      .send({ name: 'Chris', email: 'test@mail.com', password: 'azer1234' })
+      .send({ name: 'Chris', email, password: 'azer1234' })
+      .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
         error:
-          'User validation failed: email: Error, expected `email` to be unique. Value: `test@mail.com`'
+          'User validation failed: email: Error, expected `email` to be unique. Value: `tmp@mail.com`'
       })
       .then(() => {
-        return request.get('/api/users?limit=1').then(res => {
-          return request
-            .delete(`/api/users/${res.body.data[0]._id}`)
-            .expect(200)
-        })
+        return request
+          .post('/api/auth/login')
+          .send({ email, password: 'azer1234' })
+          .expect(200)
+          .then(res => {
+            return request
+              .delete(`/api/users/${res.body.userId}`)
+              .set('Authorization', `bearer ${res.body.token}`)
+              .expect(200)
+          })
       })
   })
 })
