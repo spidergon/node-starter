@@ -6,8 +6,9 @@ import postController from '../src/controllers/postController'
 
 export default server => {
   // USER ROUTES
-  // server.get('/api/users/', auth, catchErrors(userController.readAll))
-  // server.get('/api/users/:id', auth, catchErrors(userController.read))
+  server.get('/api/users/', catchErrors(userController.readAll))
+  server.get('/api/users/:id', catchErrors(userController.read))
+  server.delete('/api/users/:id', catchErrors(userController.delete))
   server.post('/api/auth/signup', catchErrors(userController.signup))
   server.post('/api/auth/login', catchErrors(userController.login))
 

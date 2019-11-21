@@ -10,11 +10,11 @@ class UserService extends Service {
   }
 
   signup = async (body, next, fallback) => {
-    const { email, password } = body
-    // TODO: check email
-    const hash = await bcrypt.hash(password, 10)
+    const { name, email, password } = body
+    let hash
+    if (password) hash = await bcrypt.hash(password, 10)
     this.model
-      .create({ email, password: hash })
+      .create({ name, email, password: hash })
       .then(next)
       .catch(fallback)
   }

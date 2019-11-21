@@ -130,7 +130,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: 'node'
+  testEnvironment: 'node',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -149,6 +149,7 @@ module.exports = {
   //   "/node_modules/"
   // ],
 
+  testPathIgnorePatterns: ['/node_modules/']
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],
 
