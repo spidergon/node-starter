@@ -25,6 +25,13 @@ class UserService extends Service {
     const user = await this.model.findOne({ email })
     if (!user) return fallback({ message: 'User not found' })
 
+    if (!password) {
+      return fallback({
+        message:
+          'User validation failed: password: Path `password` is required.'
+      })
+    }
+
     const valid = await bcrypt.compare(password, user.password)
     if (!valid) return fallback({ message: 'Incorrect password' })
 

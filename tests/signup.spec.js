@@ -2,16 +2,19 @@ import supertest from 'supertest'
 import { mongoose } from '../config/database'
 import server from '../config/server'
 
-const request = supertest(server)
-const email = 'tmp@mail.com'
-
 afterAll(done => mongoose.disconnect(done))
 
 describe('POST /api/auth/signup', () => {
+  const request = supertest(server)
+  const signupRoute = '/api/auth/signup'
+  const name = 'Chris'
+  const email = 'tmp@mail.com'
+  const password = 'azer1234'
+
   it('should NOT signup without required `name` field', () => {
     return request
-      .post('/api/auth/signup')
-      .send({ email, password: 'azer1234' })
+      .post(signupRoute)
+      .send({ email, password })
       .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
@@ -21,8 +24,8 @@ describe('POST /api/auth/signup', () => {
 
   it('should NOT signup without required `email` field', () => {
     return request
-      .post('/api/auth/signup')
-      .send({ name: 'Chris', password: 'azer1234' })
+      .post(signupRoute)
+      .send({ name, password })
       .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
@@ -32,8 +35,8 @@ describe('POST /api/auth/signup', () => {
 
   it('should NOT signup without required `password` field', () => {
     return request
-      .post('/api/auth/signup')
-      .send({ name: 'Chris', email })
+      .post(signupRoute)
+      .send({ name, email })
       .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
@@ -43,8 +46,8 @@ describe('POST /api/auth/signup', () => {
 
   it('should NOT signup with incorrect `email` field', () => {
     return request
-      .post('/api/auth/signup')
-      .send({ name: 'Chris', email: 'tmpmail.com', password: 'azer1234' })
+      .post(signupRoute)
+      .send({ name, email: 'tmpmail.com', password })
       .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
@@ -54,16 +57,16 @@ describe('POST /api/auth/signup', () => {
 
   it('should signup correctly', () => {
     return request
-      .post('/api/auth/signup')
-      .send({ name: 'Chris', email, password: 'azer1234' })
+      .post(signupRoute)
+      .send({ name, email, password })
       .expect('Content-Type', /json/)
-      .expect(201)
+      .expect(201, { status: 201, message: 'Ok' })
   })
 
   it('should NOT signup with identical email', () => {
     return request
-      .post('/api/auth/signup')
-      .send({ name: 'Chris', email, password: 'azer1234' })
+      .post(signupRoute)
+      .send({ name, email, password })
       .expect('Content-Type', /json/)
       .expect(500, {
         status: 500,
@@ -73,12 +76,12 @@ describe('POST /api/auth/signup', () => {
       .then(() => {
         return request
           .post('/api/auth/login')
-          .send({ email, password: 'azer1234' })
+          .send({ email, password })
           .expect(200)
-          .then(res => {
+          .then(({ body }) => {
             return request
-              .delete(`/api/users/${res.body.userId}`)
-              .set('Authorization', `bearer ${res.body.token}`)
+              .delete(`/api/users/${body.userId}`)
+              .set('Authorization', `bearer ${body.token}`)
               .expect(200)
           })
       })
