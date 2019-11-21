@@ -1,8 +1,9 @@
 import mongoose, { Schema } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import isEmail from 'validator/lib/isEmail'
+import Model from './Model'
 
-class User {
+class User extends Model {
   initSchema () {
     const schema = new Schema(
       {
@@ -22,12 +23,7 @@ class User {
 
     schema.plugin(uniqueValidator)
 
-    mongoose.model('User', schema)
-  }
-
-  getInstance () {
-    this.initSchema()
-    return mongoose.model('User')
+    this.model = mongoose.model('User', schema)
   }
 }
 
